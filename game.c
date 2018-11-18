@@ -7,8 +7,9 @@
 #include <time.h>
 #include <stdbool.h>
 // there are a lot of bugs
-// to close the programm just kill it)
+// to close the program just kill it =)
 // i believe i will continue working on the snake further 
+// dont pay attention on some shitcoded moments =) I only study
 void clear() {
     while(getchar() != '\n');
 }
