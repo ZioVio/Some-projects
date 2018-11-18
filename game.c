@@ -1,7 +1,7 @@
-#include <stdio.h>    // Для друку в термінал
-#include <math.h>     // Для математичних функцій
-#include <stdlib.h>   // Деякі додаткові функції
-#include <progbase.h> // Спрощений ввід і вивід даних у консоль
+#include <stdio.h>    
+#include <math.h>    
+#include <stdlib.h>  
+#include <progbase.h> 
 #include <progbase/console.h>
 #include <progbase/canvas.h>
 #include <time.h>
