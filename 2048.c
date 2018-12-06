@@ -71,7 +71,8 @@ void matrix_move(int move, int matrix[][4]) {
                     for (int j = 0; j < 3; j++) {
                         if (matrix[i][j + 1] == 0) {
                             matrix[i][j + 1] = matrix[i][j];
-                            matrix[i][j] = 0; 
+                            if (matrix[i][j] != 0) flag = 1; 
+                            matrix[i][j] = 0;
                         }
                     }
                 }
@@ -81,7 +82,7 @@ void matrix_move(int move, int matrix[][4]) {
         }
         case LEFT: {
             for (int i = 0; i < 4; i++) {
-                for (int j = 3; j < 0; j--) {
+                for (int j = 3; j > 0; j--) {
                     if (matrix[i][j] == matrix[i][j - 1]) {
                         matrix[i][j - 1] = matrix[i][j] * 2;
                         matrix[i][j] = 0;   
@@ -92,9 +93,10 @@ void matrix_move(int move, int matrix[][4]) {
             while(flag) {
                 flag = 0;
                 for (int i = 0; i < 4; i++) {
-                    for (int j = 3; j < 0; j--) {
+                    for (int j = 3; j > 0; j--) {
                         if(matrix[i][j - 1] == 0) {
                             matrix[i][j - 1] = matrix[i][j];
+                            if (matrix[i][j] != 0) flag = 1;
                             matrix[i][j] = 0; 
                         }
                     }
@@ -103,7 +105,7 @@ void matrix_move(int move, int matrix[][4]) {
             break;
         }
         case UP: {
-            for (int i = 3; i < 0; i--) {
+            for (int i = 3; i > 0; i--) {
                 for (int j = 0; j < 4; j++) {
                     if (matrix[i][j] == matrix[i - 1][j]) {
                         matrix[i - 1][j] = matrix[i][j] * 2;
@@ -111,13 +113,14 @@ void matrix_move(int move, int matrix[][4]) {
                     } 
                 }
             }
-            bool flag = 1;
+             bool flag = 1;
             while(flag) {
                 flag = 0;
-                for (int i = 3; i < 0; i--) {
+                for (int i = 3; i > 0; i--) {
                     for (int j = 0; j < 4; j++) {
                         if(matrix[i - 1][j] == 0) {
                             matrix[i - 1][j] = matrix[i][j];
+                            if (matrix[i][j] != 0) flag = 1;
                             matrix[i][j] = 0; 
                         }
                     }
@@ -141,6 +144,7 @@ void matrix_move(int move, int matrix[][4]) {
                     for (int j = 0; j < 4; j++) {
                         if(matrix[i + 1][j] == 0) {
                             matrix[i + 1][j] = matrix[i][j];
+                            if (matrix[i][j] != 0) flag = 1;
                             matrix[i][j] = 0; 
                         }
                     }
@@ -162,12 +166,14 @@ void draw(int matrix[][4]) {
     // }
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            printf("%d ", matrix[i][j]);
+            if (matrix[i][j] != 0)
+            printf("%3d", matrix[i][j]);
+            else printf("   ");
         }
         puts("");
     }
 }
-
+ 
 void add_rand(int matrix[][4]) {
     int flag = rand_int(1, 10);
     if (flag < 9) {
