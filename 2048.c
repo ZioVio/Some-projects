@@ -176,21 +176,18 @@ void draw(int matrix[][4]) {
  
 void add_rand(int matrix[][4]) {
     int flag = rand_int(1, 10);
+    int n, m;
     if (flag < 9) {
-        int n = rand_int(0, 3);
-        int m = rand_int(0, 3);
-        while (matrix[n][m] != 0) {
+        do {
             n = rand_int(0, 3);
             m = rand_int(0, 3);
-        }
+        } while (matrix[n][m] != 0);
         matrix[n][m] = 2;
     } else {
-        int n = rand_int(0, 3);
-        int m = rand_int(0, 3);
-        while (matrix[n][m] != 0) {
+        do {
             n = rand_int(0, 3);
             m = rand_int(0, 3);
-        }
+        } while (matrix[n][m] != 0);
         matrix[n][m] = 4;
     }
 }
