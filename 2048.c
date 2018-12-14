@@ -167,8 +167,8 @@ void draw(int matrix[][4]) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             if (matrix[i][j] != 0)
-            printf("%3d", matrix[i][j]);
-            else printf("   ");
+            printf("%4d", matrix[i][j]);
+            else printf("    ");
         }
         puts("");
     }
