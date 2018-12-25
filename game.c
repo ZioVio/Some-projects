@@ -6,19 +6,28 @@
 #include <progbase/canvas.h>
 #include <time.h>
 #include <stdbool.h>
+#include <string.h>
+
+int rand_int(int min, int max) {
+    return rand()%(max - min + 1) + min;
+}
 // there are a lot of bugs
 // to close the program just kill it =)
 // i believe i will continue working on the snake further 
 // dont pay attention on some shitcoded moments =) I only study
+struct pos {
+    int x;
+    int y;
+};
+typedef struct pos pos;
+
 void clear() {
     while(getchar() != '\n');
 }
 
-void draw_snake(int len, int array_x[], int array_y[]) {
-    
-    Canvas_setColorRGB(0, 255, 0);
+void draw_snake(int len, pos snake[]) {
     for (int i = 0; i < len; i++) {
-        Canvas_putPixel(array_x[i], array_y[i]);
+        Canvas_putPixel(snake[i].x, snake[i].y);
     }
     
 }
@@ -28,18 +37,18 @@ void draw_border(int w, int h) {
     Canvas_strokeRect(2, 2, w, h);
 }
 
-void update_snake(int x_head, int y_head, int array_x[], int array_y[], int len) {
-    array_x[0] = x_head;
-    array_y[0] = y_head;
+void update_snake(pos *head, pos snake[], int len) {
+    snake[0].x = head -> x;
+    snake[0].y = head -> y;
     for(int i = 1; i < len; i++) {
-        array_x[len - i] = array_x[len - i - 1];
-        array_y[len - i] = array_y[len - i - 1];
+        snake[len - i].x = snake[len - i - 1].x;
+        snake[len - i].y = snake[len - i - 1].y;
     }
 }
 
-bool create_apple(int W, int H, int *apple_x, int *apple_y) {
-    *apple_x = rand() % (W - 1 - 3 + 1) + 3;
-    *apple_y = rand() % (H - 1 - 3 + 1) + 3;
+bool create_apple(int W, int H, pos *apple) {
+    apple -> x = rand_int(2, W - 1);
+    apple -> y = rand_int(2, H - 1);
     return 1;
 }
 
@@ -52,26 +61,31 @@ enum {
 
 
 
-void move (int direction, int *prev_direction, int *x_head, int * y_head) {
+void move (int direction, int prev_direction, pos* head) {
 
     switch (direction) {
-        case RIGHT: if (*prev_direction == LEFT) *x_head -= 1; else *x_head += 1; break;
-        case LEFT: if (*prev_direction == RIGHT) *x_head += 1; else *x_head -= 1; break;
-        case DOWN: if (*prev_direction == UP) *y_head += 1; else *y_head -= 1; break;
-        case UP: if (*prev_direction == DOWN) *y_head -= 1; else *y_head += 1; break;
+        case RIGHT: if (prev_direction == LEFT) head -> x -= 1; else head -> x += 1; break;
+        case LEFT: if (prev_direction == RIGHT) head -> x += 1; else head -> x -= 1; break;
+        case DOWN: if (prev_direction == UP) head -> y += 1; else head -> y -= 1; break;
+        case UP: if (prev_direction == DOWN) head -> y -= 1; else head -> y += 1; break;
         case 'Q': exit(0);
-        default: move(*prev_direction, &*prev_direction, &*x_head, &*y_head); break;
-
     }
 }
 
 int main(int argc, char *argv[]) {
+    bool eat = false;
+
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[1], "-e") == 0) eat = true;
+    }
+
     srand(time(0));
     Console_clear();
     int len = 30;
 
 
-    int apple_x = -1, apple_y = -1;
+    pos apple = {-1, -1};
+    pos super_apple = {-1, -1};
 
     Canvas_invertYOrientation();
 
@@ -82,71 +96,105 @@ int main(int argc, char *argv[]) {
     int border_x = W - 2;
     int border_y = H - 2;
 
-    int w = W / 5;
-    int h = H / 5;
-
-    int array_x[W*H], array_y[W*H];
+    pos snake[W*H];
     for (int i = 0; i < len; i++) {
-        array_x[i] = i + W / 2;
-        array_y[i] = H / 2;
+        snake[i].x = i + W / 2;
+        snake[i].y = H / 2;
     }
 
-    int x_head = array_x[0];
-    int y_head = array_y[0];
+    pos head = snake[0];
+    head.x = snake[0].x;
+    head.y = snake[0].y;
 
 
     int DIRECTION = UP;
     int prev_DIRECTION;
 
-    create_apple(W, H, &apple_x, &apple_y);
-
+    create_apple(W, H, &apple);
+    bool s_apple = false;
+    int s_apple_counter = 0;
     do {
 
 
         if (Console_isKeyDown()) {
             prev_DIRECTION = DIRECTION;
             DIRECTION = getchar();
+            switch (prev_DIRECTION) {
+                case UP: if (DIRECTION == DOWN) DIRECTION = UP; break;
+                case RIGHT: if (DIRECTION == LEFT) DIRECTION = RIGHT; break;
+                case LEFT: if (DIRECTION == RIGHT) DIRECTION = LEFT; break;
+                case DOWN: if (DIRECTION == UP) DIRECTION = DOWN; break;
+            }
+            if (DIRECTION != UP && DIRECTION != DOWN && DIRECTION != LEFT && DIRECTION != RIGHT) DIRECTION = prev_DIRECTION;
         }
 
 
-        update_snake(x_head, y_head, array_x, array_y, len);
+        update_snake(&head, snake ,len);
         
 
         for (int i = 2; i < len; i++) {
-            if (x_head == array_x[i] && y_head == array_y[i]) {
-                len = i;
+            if (head.x == snake[i].x && head.y == snake[i].y) {
+                if (eat) len = i;
+                else {
+                    printf("YOU LOST\n");
+                    return EXIT_FAILURE;
+                }
             }
         }
 
-        move(DIRECTION, &prev_DIRECTION, &x_head, &y_head);
+        move(DIRECTION, prev_DIRECTION, &head);
 
-        if (x_head == 2) x_head = border_x;
-        else if (y_head == 2) y_head = border_y;
-        else if (x_head == border_x + 1) x_head = 3; 
-        else if (y_head == border_y + 1) y_head = 3;
+        if (head.x == 2) head.x = border_x;
+        else if (head.y == 2) head.y = border_y;
+        else if (head.x == border_x + 1) head.x = 3; 
+        else if (head.y == border_y + 1) head.y = 3;
 
         Canvas_beginDraw();
         draw_border(border_x, border_y);
-        draw_snake(len, array_x, array_y);
-        Canvas_setColorRGB(255, 0, 0);
-        Canvas_putPixel(apple_x, apple_y);
+        if (s_apple_counter > 0) Canvas_setColorRGB(rand_int(0, 255), rand_int(0, 255), rand_int(0,255));
+        else Canvas_setColorRGB(0, 255, 0);
+        draw_snake(len, snake);
+        if (s_apple) {
+            Canvas_setColorRGB(rand_int(0, 255), rand_int(0, 255), rand_int(0,255));
+            Canvas_putPixel(super_apple.x, super_apple.y);
+        } else {
+            Canvas_setColorRGB(255, 0, 0);
+            Canvas_putPixel(apple.x, apple.y);
+        }
         Canvas_endDraw();
+
 
         Console_setCursorPosition(1, 1);
         printf("Len = %d\n", len);
 
 
 
-
-
         for (int i = 0; i < len; i++) {
-            if (array_x[i] == apple_x && array_y[i] == apple_y) {
-                create_apple(border_x, border_y, &apple_x, &apple_y);
-                len += 1;
+            if (snake[i].x == apple.x && snake[i].y == apple.y) {
+                if (rand_int(1, 3) == 1 && s_apple == false) {
+                    s_apple = true;
+                    create_apple(border_x, border_y, &super_apple);
+                }
+                else {
+                    create_apple(border_x, border_y, &apple);
+                    s_apple_counter = 0;
+                    len += 1;
+                }
+            } else if (snake[i].x == super_apple.x && snake[i].y == super_apple.y) {
+                s_apple = false;
+                s_apple_counter = 1;
             }
         }
 
-        sleepMillis(50);
+
+        if (s_apple_counter > 0) {
+            sleepMillis(20);
+            s_apple_counter++;
+        } else sleepMillis(50); 
+
+        
+
+
     } while(1);
 
 
