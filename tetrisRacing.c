@@ -27,7 +27,7 @@ int randInt(int min, int max) {
 
 void removeCar(struct car_list * list, int index);
 
-void drawCar(int car[][3], int x, int y);
+void drawCar(int n, int m, int car[][m], int x, int y);
 
 void addCar(struct car_list * list, struct n_car);
 
@@ -35,6 +35,7 @@ void drawBoarder (int w, int h, int boarder[]);
 
 int main(int argc, char *argv[]) {
     time_t t = time(0);
+    srand(time(0));
     clock_t clocks = clock();
     Console_clear();
     FILE * c = NULL;
@@ -42,12 +43,15 @@ int main(int argc, char *argv[]) {
         printf("Cannot open file %s\n", "c.txt");
         exit(EXIT_FAILURE);
     }
-    int car[4][3];
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 3; j++) {
-            const char ch =  fgetc(c);
-            if (ch != '\n') car[i][j] = ch - 48;
-            else j--;
+    int n = 15, m = 15;
+    int car[n][m];
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if(i == j) car[i][j] = 1;
+            else if(i + j == n - 1) car[i][j] = 1;
+            else if (j == m / 2) car[i][j] = 1;
+            else if (i == n / 2) car[i][j] = 1;
+            else car[i][j] = 0;
         }
     }
     // for (int i = 0; i < 4; i++) {
@@ -58,7 +62,7 @@ int main(int argc, char *argv[]) {
     // }
 
 
-    int maxCars = 500;
+    int maxCars = 5000;
     struct n_car cars[maxCars];
     struct car_list car_list = {
         &cars[0],
@@ -67,12 +71,21 @@ int main(int argc, char *argv[]) {
     };
 
 
-    int w = 30, h = 30;
+
+
     // Console_setSize(h, w);
-    Canvas_setSize(w, h);
     Canvas_invertYOrientation();
     int butt = 0;
+    int w, h;
+    if (argc > 1 &&  argv[1][0] == 'c' ) {
+        w = Console_size().columns;
+        h = Console_size().rows * 2;
+    } else {
+        w = 20;
+        h = 30;
+    }
     int x = 4, y = 3;
+    Canvas_setSize(w, h);
 
 
     int boarder[h + 1];
@@ -81,24 +94,24 @@ int main(int argc, char *argv[]) {
         boarder[i] = randInt(0, 1);
     }
     boarder[h] = 1;
-    float speed = 0.004;
+    float speed = 0.0008;
     
         // Console_clear();
     int counter = 0;
     do {
-        if (counter > 20) {
+        if (counter > 30) {
             struct n_car curr = {
                 randInt(2, w - 3),
-                h 
+                h + 3
             };
             addCar(&car_list, curr);
             t = time(0);
-            Console_clear();
+            // Console_clear();
             counter = 0;
         }
 
 
-        for (int i = 0; i < car_list.count; i++) cars[i].y -= 0.03;
+        for (int i = 0; i < car_list.count; i++) cars[i].y -= speed * 100;
         for (int i = 0; i < car_list.count; i++) {
            if (cars[i].y < -1) removeCar(&car_list, i); // rewrite THIS
         }
@@ -122,19 +135,21 @@ int main(int argc, char *argv[]) {
         // draw
         Canvas_beginDraw();
         Canvas_setColorRGB(200, 200, 50);
-        drawCar(car, x, y);
+        drawCar(n, m, car, x, y+5);
         Canvas_setColorRGB(100, 200, 50);
         for (int i = 0; i < car_list.count; i++) {
-            drawCar(car, cars[i].x, cars[i].y);
+            // Canvas_setColorRGB(randInt(0, 255),randInt(0, 255),randInt(0, 255));
+            Canvas_setColorRGB(255, 255, 255);
+            drawCar(n, m, car, cars[i].x, cars[i].y);
         }
         drawBoarder(w, h, boarder);
         Canvas_endDraw();
         //draw
         for (int i = 0; i < car_list.count; i++) {
             if (fabs(x - cars[i].x) < 3 && fabs(y - cars[i].y) < 4) {
-                Console_clear();
-                printf("TY PROIGRAL\n");
-                return EXIT_FAILURE;
+                // Console_clear();
+                // printf("TY PROIGRAL\n");
+                // return EXIT_FAILURE;
             }
         }
 
@@ -161,9 +176,9 @@ int main(int argc, char *argv[]) {
 }
 
 
-void drawCar(int car[][3], int x, int y) {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 3; j++) {
+void drawCar(int n, int m, int car[][m], int x, int y) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
             if (car[i][j] == 1) Canvas_putPixel( -j + x + 1, y + 2 - i);
         }
     }
