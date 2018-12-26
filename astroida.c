@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     {
         float x = r * pow(cos(t), 3);
         float y = r * pow(sin(t), 3);
-        t += 0.0099 * 2;
+        t += 0.001;
         struct pos tmp = {
             x, y};
         addPoint(&list, tmp);
@@ -79,14 +79,14 @@ int main(int argc, char *argv[])
             // if (x < r * pow(cos(ang), 3) && y <  r * pow(sin(ang), 3))
             Canvas_putPixel(x + w / 2, y + h / 2);
         }
-        ang += 0.001;
+        ang += 0.005;
         Canvas_endDraw();
         // y = r*sin()
         // Canvas_setColorRGB(0, 255, 255);
         // Canvas_strokeLine(tmp.x + w/2, h/2, w/2, tmp.y + h/2);
         // if (index < list.count) index++;
         // else index = 0;
-        sleepMillis(1);
+        // sleepMillis(1);
     } while (1);
 
     return 0;
