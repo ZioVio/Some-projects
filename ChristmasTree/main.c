@@ -113,6 +113,7 @@ int main(int argc, char *argv[])
             Canvas_putPixel(x1, y1);
             Canvas_putPixel(x2, y2);
         }
+        
         Canvas_strokeLine(x1, y1, x2, y2);
             
             
