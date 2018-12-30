@@ -10,6 +10,7 @@
 #include <progbase/console.h>
 #include <progbase/canvas.h>
 
+
 typedef struct pos
 {
     int x;
