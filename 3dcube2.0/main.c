@@ -122,8 +122,8 @@ int main(int argc, char *argv[]) {
     // Vec testVec2 = createVec(-5, 20, -7);
 
 
-    float rotAngleX = -PI/600;
-    float rotAngleY = -PI/300;
+    float rotAngleX = -PI/300;
+    float rotAngleY = PI/400;
     do {
         for (int i = 0; i < 8; i++) 
         {
@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
 
         Canvas_endDraw();
         
-        sleepMillis(10);
+        sleepMillis(5);
 
 
         // rotAngle += 0.0001;
