@@ -80,18 +80,19 @@ void test() {
 void drawCube(Vec cube[], Vec c) {
     float x = c.x;
     float y = c.y;
-    Canvas_strokeLine(cube[0].x + x, cube[0].y + y, cube[1].x + x, cube[1].y + y);
-    Canvas_strokeLine(cube[0].x + x, cube[0].y + y, cube[2].x + x, cube[2].y + y);
     Canvas_strokeLine(cube[2].x + x, cube[2].y + y, cube[3].x + x, cube[3].y + y);
     Canvas_strokeLine(cube[3].x + x, cube[3].y + y, cube[1].x + x, cube[1].y + y);
     Canvas_strokeLine(cube[1].x + x, cube[1].y + y, cube[5].x + x, cube[5].y + y);
     Canvas_strokeLine(cube[5].x + x, cube[5].y + y, cube[4].x + x, cube[4].y + y);
-    Canvas_strokeLine(cube[0].x + x, cube[0].y + y, cube[4].x + x, cube[4].y + y);
     Canvas_strokeLine(cube[7].x + x, cube[7].y + y, cube[3].x + x, cube[3].y + y);
     Canvas_strokeLine(cube[6].x + x, cube[6].y + y, cube[2].x + x, cube[2].y + y);
     Canvas_strokeLine(cube[6].x + x, cube[6].y + y, cube[4].x + x, cube[4].y + y);
     Canvas_strokeLine(cube[5].x + x, cube[5].y + y, cube[7].x + x, cube[7].y + y);
     Canvas_strokeLine(cube[6].x + x, cube[6].y + y, cube[7].x + x, cube[7].y + y);
+    Canvas_setColorRGB(0, 250, 50);
+    Canvas_strokeLine(cube[0].x + x, cube[0].y + y, cube[1].x + x, cube[1].y + y);
+    Canvas_strokeLine(cube[0].x + x, cube[0].y + y, cube[2].x + x, cube[2].y + y);
+    Canvas_strokeLine(cube[0].x + x, cube[0].y + y, cube[4].x + x, cube[4].y + y);
 }
 
 
@@ -122,17 +123,20 @@ int main(int argc, char *argv[]) {
     // Vec testVec2 = createVec(-5, 20, -7);
 
 
-    float rotAngleX = -PI/300;
-    float rotAngleY = PI/400;
+    // float rotAngleX = PI/100;
+    // float rotAngleY = PI/100;
+    float rotAng = PI/100;
     do {
-        for (int i = 0; i < 8; i++) 
-        {
-            cube[i] = rotateVecY(cube[i], rotAngleY);
-        }
-        for (int i = 0; i < 8; i++)  
-        {
-            cube[i] = rotateVecX(cube[i], rotAngleX);
-        }
+        // for (int i = 0; i < 8; i++) 
+        // {
+        //     cube[i] = rotateVecY(cube[i], rotAngleY);
+        // }
+        // for (int i = 0; i < 8; i++)  
+        // {
+        //     cube[i] = rotateVecX(cube[i], rotAngleX);
+        // }
+
+                
         Canvas_beginDraw();
 
         // for (int i = 0; i < 8; i++) {
@@ -147,7 +151,14 @@ int main(int argc, char *argv[]) {
         
         sleepMillis(5);
 
+        int key = Console_getChar();
 
+        switch (key) {
+            case 'w':for (int i = 0; i < 8; i++) cube[i] = rotateVecY(cube[i], rotAng); break;
+            case 's':for (int i = 0; i < 8; i++) cube[i] = rotateVecY(cube[i], -rotAng); break;
+            case 'a':for (int i = 0; i < 8; i++) cube[i] = rotateVecX(cube[i], rotAng); break;
+            case 'd':for (int i = 0; i < 8; i++) cube[i] = rotateVecX(cube[i], -rotAng); break;
+        }
         // rotAngle += 0.0001;
     } while(1);
 
