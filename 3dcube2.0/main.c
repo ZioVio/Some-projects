@@ -203,7 +203,7 @@ int main(int argc, char *argv[]) {
         Canvas_setColorRGB(255, 255, 255);
         drawCube(cube, central_vec);
 
-        Canvas_strokeLine(w/2, 0, central_vec.x, central_vec.y);
+        Canvas_strokeLine(central_vec.x, central_vec.y, central_vec.x, playerToCubeXDist(playerPos, cubePos)/100);
 
         Canvas_endDraw();
         
