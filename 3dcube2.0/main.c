@@ -31,8 +31,6 @@ float len(Vec vec) {
 void drawVec(Vec c, Vec vec) {
     float x = vec.x;
     float y = vec.y;
-    float z = vec.z;
-    float len_vec = len(vec);
     Canvas_strokeLine(c.x, c.y, c.x + x, c.y + y);
 }
 
