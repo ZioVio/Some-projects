@@ -10,6 +10,8 @@
 #include <progbase/console.h>
 #include <progbase/canvas.h>
 
+#define PI 3.1415926
+
 
 
 void Canvas_strokeEllipse(int cx, int cy,  int a,  int b);
@@ -58,15 +60,13 @@ void Canvas_fillCircle2(int cx, int cy, float r) {
 }
 
 void Canvas_strokeEllipse(int cx, int cy,  int a,  int b) {
-    float tmp = 0;
-    const float PI = 3.1415926;
-    float max = fmax(a, b);
-    float angle = 1/(2*max);
-    while(tmp <= 2 * PI) {
+    float len_ellipse = PI*(a + b);
+    float additional_accuracy = 2;
+    float angle = 2*PI/(len_ellipse * additional_accuracy);
+    for (float tmp = 0; tmp <= 2 * PI; tmp += angle) {
         float x = a*cos(tmp);
         float y = b*sin(tmp);
         Canvas_putPixel(x + cx, y + cy);
-        tmp += angle;
     }
 }
 
