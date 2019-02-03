@@ -63,9 +63,9 @@ void Canvas_strokeEllipse(int cx, int cy,  int a,  int b) {
     float len_ellipse = PI*(a + b);
     float additional_accuracy = 2;
     float angle = 2*PI/(len_ellipse * additional_accuracy);
-    for (float tmp = 0; tmp <= 2 * PI; tmp += angle) {
-        float x = a*cos(tmp);
-        float y = b*sin(tmp);
+    for (float tmp_angle = 0; tmp_angle <= 2 * PI; tmp_angle += angle) {
+        float x = a*cos(tmp_angle);
+        float y = b*sin(tmp_angle);
         Canvas_putPixel(x + cx, y + cy);
     }
 }
