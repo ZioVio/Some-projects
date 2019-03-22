@@ -1,8 +1,8 @@
 #pragma once
 
-#include "list.h"
+#include "GCList.h"
 
-List listOfPtrs;
+GCList listOfPtrs; 
 
 void GC_begin();
 
