@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
 
     x = GC_malloc(sizeof(int));
     *x = 14;
+    GC_free(x); // to check for avoiding double freeing
     x = &a;
     x = GC_malloc(sizeof(int));
     x = NULL;
@@ -46,7 +47,13 @@ int main(int argc, char *argv[])
     
     puts(pstr);
     *par = NULL;
+    par = GC_realloc(par, sizeof(int*) * 50); // to test reallocating 
     
+    for (int i = 0; i < 50; i++) {
+        par[i] = GC_malloc(sizeof(int *));
+        *par[i] = 42;
+    }
+
     pstr = "READONLY";
     
     puts(pstr);
