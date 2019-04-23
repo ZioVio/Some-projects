@@ -27,19 +27,17 @@ def send_mess(chat, text):
     return response
 
 def main():  
-    updates = last_update(get_updates_json(url))
-    update_id = updates['update_id']
-    text_to_send = updates['message']['text']
     while True:
+        update_id = last_update(get_updates_json(url))['update_id']
+        sleep(2)     
         curr_upd = last_update(get_updates_json(url))
-        if update_id == curr_upd['update_id']:
+        print(update_id, "  ", curr_upd['update_id'])
+        if update_id != curr_upd['update_id']:
+            curr_upd = last_update(get_updates_json(url))
             text_to_send = curr_upd['message']['text']
-            if curr_upd['message']['from']['username'] == 'ZioSmith':
-                send_mess(get_chat_id(curr_upd), 'Tolko Andrey poluchaet eto soobshchenie')
-            send_mess(get_chat_id(curr_upd), text_to_send)
             print(text_to_send)
+            send_mess(get_chat_id(curr_upd), text_to_send)
             update_id += 1
-        sleep(1)      
 
 if __name__ == '__main__':  
     main()
