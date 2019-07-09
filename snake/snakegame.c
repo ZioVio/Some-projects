@@ -80,9 +80,11 @@ void move (int direction, int prev_direction, pos* head) {
 
 int main(int argc, char *argv[]) {
     bool eat = false;
+    bool god = false;
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[1], "-e") == 0) eat = true;
+        if (strcmp(argv[1], "-g") == 0) god = true;
     }
 
     srand(time(0));
@@ -137,13 +139,15 @@ int main(int argc, char *argv[]) {
 
         update_snake(&head, snake ,len);
         
+        if (god == false) {
 
-        for (int i = 2; i < len; i++) {
-            if (head.x == snake[i].x && head.y == snake[i].y) {
-                if (eat) len = i;
-                else {
-                    printf("YOU LOST\n");
-                    return EXIT_FAILURE;
+            for (int i = 2; i < len; i++) {
+                if (head.x == snake[i].x && head.y == snake[i].y) {
+                    if (eat) len = i;
+                    else {
+                        printf("YOU LOST\n");
+                        return 0;
+                    }
                 }
             }
         }

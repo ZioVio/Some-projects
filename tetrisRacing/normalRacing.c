@@ -153,6 +153,12 @@ int main(int argc, char *argv[]) {
                     x++;
                     break;
                 }
+                case 'w': 
+                    y++;
+                    break;
+                case 's': 
+                    y--;
+                    break; 
             }
         }
     } while(1);
